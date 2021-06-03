@@ -1,0 +1,13 @@
+FROM centos:centos7
+
+WORKDIR package
+
+ENV DIR=centos-7-amd64-rpms
+
+RUN mkdir ${DIR} && cd ${DIR} && yum install yum-utils --downloadonly --downloaddir=./ && \
+    yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo && \
+    yum install docker-ce docker-ce-cli containerd.io --downloadonly --downloaddir=./  && \
+    yum install chrony bind-utils nfs-utils net-tools ipvsadm ceph-common glusterfs-fuse \
+        curl openssl socat conntrack ebtables ipset telnet --downloadonly --downloaddir=./
+
+RUN  tar -zcvf ${DIR}.tar.gz ${DIR}

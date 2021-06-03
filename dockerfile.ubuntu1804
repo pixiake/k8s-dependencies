@@ -1,0 +1,16 @@
+From ubuntu:18.04
+
+WORKDIR package
+
+ENV DIR=ubuntu-18.04-amd64-debs
+
+RUN mkdir ${DIR} && apt update && apt install curl sudo software-properties-common apt-transport-https -y && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - && \
+    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable" && \
+    add-apt-repository ppa:gluster/glusterfs-7 -y && apt update && \
+    apt install -d --reinstall apt-transport-https ca-certificates curl gnupg-agent software-properties-common sudo openssl \
+        socat conntrack ebtables ipset docker-ce docker-ce-cli containerd.io chrony ipvsadm nfs-common ceph-common glusterfs-client \
+        dnsutils telnet -y  && \
+    mv /var/cache/apt/archives/*  ${DIR}/ && rm -rf ${DIR}/lock && rm -rf ${DIR}/partial
+
+RUN  tar -zcvf ${DIR}.tar.gz ${DIR}
+
