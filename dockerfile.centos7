@@ -3,11 +3,13 @@ FROM centos:centos7
 WORKDIR package
 
 ENV DIR=centos-7-amd64-rpms
+ENV DOCKERVERSION=20.10.8
 
-RUN mkdir ${DIR} && cd ${DIR} && yum install yum-utils --downloadonly --downloaddir=./ && \
+RUN mkdir ${DIR} && cd ${DIR} && \
     yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo && \
-    yum install docker-ce docker-ce-cli containerd.io --downloadonly --downloaddir=./  && \
-    yum install chrony bind-utils nfs-utils net-tools ipvsadm ceph-common glusterfs-fuse \
-        curl openssl socat conntrack ebtables ipset telnet --downloadonly --downloaddir=./
+    yumdownloader --resolve --destdir ./ docker-ce-${DOCKERVERSION} docker-ce-cli-${DOCKERVERSION} containerd.io \
+        chrony bind-utils nfs-utils net-tools ipvsadm ceph-common glusterfs-fuse yum-utils \
+        curl openssl socat conntrack ebtables ipset telnet lvm2 && \
+        yum install createrepo mkisofs -y && createrepo ./
 
-RUN  tar -zcvf ${DIR}.tar.gz ${DIR}
+RUN  mkisofs -r -o ${DIR}.iso ${DIR}

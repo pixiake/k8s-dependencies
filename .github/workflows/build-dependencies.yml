@@ -28,22 +28,22 @@ jobs:
       - name: Build dependencies (centos7)
         run: |
           docker build -t centos7-dependencies:${{ steps.get_version.outputs.VERSION }} . -f dockerfile.centos7
-          docker run --rm -v /package:/pkgs  centos7-dependencies:${{ steps.get_version.outputs.VERSION }} /bin/cp -f centos-7-amd64-rpms.tar.gz /pkgs/centos-7-amd64-rpms.tar.gz
+          docker run --rm -v /package:/pkgs  centos7-dependencies:${{ steps.get_version.outputs.VERSION }} /bin/cp -f centos-7-amd64-rpms.iso /pkgs/centos-7-amd64-rpms.iso
 
       - name: Build dependencies (ubuntu 16.04)
         run: |
           docker build -t ubuntu1604-dependencies:${{ steps.get_version.outputs.VERSION }} . -f dockerfile.ubuntu1604
-          docker run --rm -v /package:/pkgs  ubuntu1604-dependencies:${{ steps.get_version.outputs.VERSION }} /bin/cp -f ubuntu-16.04-amd64-debs.tar.gz /pkgs/ubuntu-16.04-amd64-debs.tar.gz
+          docker run --rm -v /package:/pkgs  ubuntu1604-dependencies:${{ steps.get_version.outputs.VERSION }} /bin/cp -f ubuntu-16.04-amd64-debs.iso /pkgs/ubuntu-16.04-amd64-debs.iso
           
       - name: Build dependencies (ubuntu 18.04)
         run: |
           docker build -t ubuntu1804-dependencies:${{ steps.get_version.outputs.VERSION }} . -f dockerfile.ubuntu1804
-          docker run --rm -v /package:/pkgs  ubuntu1804-dependencies:${{ steps.get_version.outputs.VERSION }} /bin/cp -f ubuntu-18.04-amd64-debs.tar.gz /pkgs/ubuntu-18.04-amd64-debs.tar.gz
+          docker run --rm -v /package:/pkgs  ubuntu1804-dependencies:${{ steps.get_version.outputs.VERSION }} /bin/cp -f ubuntu-18.04-amd64-debs.iso /pkgs/ubuntu-18.04-amd64-debs.iso
 
       - name: Build dependencies (ubuntu 20.04)
         run: |
           docker build -t ubuntu2004-dependencies:${{ steps.get_version.outputs.VERSION }} . -f dockerfile.ubuntu2004
-          docker run --rm -v /package:/pkgs  ubuntu2004-dependencies:${{ steps.get_version.outputs.VERSION }} /bin/cp -f ubuntu-20.04-amd64-debs.tar.gz /pkgs/ubuntu-20.04-amd64-debs.tar.gz
+          docker run --rm -v /package:/pkgs  ubuntu2004-dependencies:${{ steps.get_version.outputs.VERSION }} /bin/cp -f ubuntu-20.04-amd64-debs.iso /pkgs/ubuntu-20.04-amd64-debs.iso
 
 
       - name: Create Release
@@ -65,9 +65,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: /package/centos-7-amd64-rpms.tar.gz
-          asset_name: centos-7-amd64-rpms.tar.gz
-          asset_content_type: application/tar.gz   
+          asset_path: /package/centos-7-amd64-rpms.iso
+          asset_name: centos-7-amd64-rpms.iso
+          asset_content_type: application/iso
 
       - name: Upload ubuntu1604 dependencies
         id: upload-ubuntu-1604-dependencies
@@ -76,9 +76,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: /package/ubuntu-16.04-amd64-debs.tar.gz
-          asset_name: ubuntu-16.04-amd64-debs.tar.gz
-          asset_content_type: application/tar.gz   
+          asset_path: /package/ubuntu-16.04-amd64-debs.iso
+          asset_name: ubuntu-16.04-amd64-debs.iso
+          asset_content_type: application/iso
 
       - name: Upload ubuntu1804 dependencies
         id: upload-ubuntu-1804-dependencies
@@ -87,9 +87,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: /package/ubuntu-18.04-amd64-debs.tar.gz
-          asset_name: ubuntu-18.04-amd64-debs.tar.gz
-          asset_content_type: application/tar.gz   
+          asset_path: /package/ubuntu-18.04-amd64-debs.iso
+          asset_name: ubuntu-18.04-amd64-debs.iso
+          asset_content_type: application/iso
 
       - name: Upload ubuntu2004 dependencies
         id: upload-ubuntu-2004-dependencies
@@ -98,6 +98,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: /package/ubuntu-20.04-amd64-debs.tar.gz
-          asset_name: ubuntu-20.04-amd64-debs.tar.gz
-          asset_content_type: application/tar.gz   
+          asset_path: /package/ubuntu-20.04-amd64-debs.iso
+          asset_name: ubuntu-20.04-amd64-debs.iso
+          asset_content_type: application/iso

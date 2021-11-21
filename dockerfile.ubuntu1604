@@ -3,14 +3,16 @@ From ubuntu:16.04
 WORKDIR package
 
 ENV DIR=ubuntu-16.04-amd64-debs
+ENV DOCKERVERSION=5:20.10.8~3-0~ubuntu-bionic
 
 RUN mkdir ${DIR} && apt update && apt install curl sudo software-properties-common apt-transport-https -y && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - && \
     add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable" && \
     add-apt-repository ppa:gluster/glusterfs-7 -y && apt update && \
-    apt install -d --reinstall apt-transport-https ca-certificates curl gnupg-agent software-properties-common sudo openssl \
-        socat conntrack ebtables ipset docker-ce docker-ce-cli containerd.io chrony ipvsadm nfs-common ceph-common glusterfs-client \
-        dnsutils telnet -y  && \
-    mv /var/cache/apt/archives/*  ${DIR}/ && rm -rf ${DIR}/lock && rm -rf ${DIR}/partial
+    apt install -d --reinstall apt-transport-https ca-certificates curl gnupg-agent software-properties-common sudo openssl openssh-server \
+        socat conntrack ebtables ipset docker-ce=${DOCKERVERSION} docker-ce-cli=${DOCKERVERSION} containerd.io chrony ipvsadm nfs-common ceph-common glusterfs-client \
+        dnsutils telnet lvm2 -y  && \
+    mv /var/cache/apt/archives/*  ${DIR}/ && rm -rf ${DIR}/lock && rm -rf ${DIR}/partial && \
+    apt install apt-utils dpkg-dev -y && cd ${DIR} && dpkg-scanpackages ./ /dev/null |gzip > ./Packages.gz
 
-RUN  tar -zcvf ${DIR}.tar.gz ${DIR}
+RUN apt-get install genisoimage -y &&  mkisofs -r -o ${DIR}.iso ${DIR}
 
